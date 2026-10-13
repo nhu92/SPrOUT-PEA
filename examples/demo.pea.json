@@ -1,0 +1,51 @@
+{
+  "schema_version":"sprout-pea/v1",
+  "sample_id":"DEMO_SYNTHETIC",
+  "generated_at":"2026-10-13T00:00:00+00:00",
+  "producer":"Synthetic demonstration",
+  "stages":[
+    {
+      "id":"order","level":"order","default_z":0.9,
+      "predictions":[
+        {"taxon":"Rosales","rank":1,"score":84.1,"z_score":2.3,"pipeline_selected":true,"selected_by":["aggregate_z","locus_votes"],"locus_votes":12,"query_votes":18,"median_winning_distance":0.012},
+        {"taxon":"Brassicales","rank":2,"score":38.9,"z_score":0.4,"pipeline_selected":true,"selected_by":["locus_votes"],"locus_votes":5,"query_votes":7,"median_winning_distance":0.018},
+        {"taxon":"Fabales","rank":3,"score":9.2,"z_score":-0.8,"pipeline_selected":false,"selected_by":[],"locus_votes":1,"query_votes":1,"median_winning_distance":0.12},
+        {"taxon":"Poales","rank":4,"score":5.1,"z_score":-1.9,"pipeline_selected":false,"selected_by":[],"locus_votes":0,"query_votes":0,"median_winning_distance":null}
+      ],
+      "genes":[
+        {"gene":"4691","trees":2,"query_exons":3,"matches":[{"taxon":"Rosales","query_votes":2,"median_distance":0.011,"example_reference":"Rosales_Rosaceae_Prunus_persica"},{"taxon":"Brassicales","query_votes":1,"median_distance":0.02,"example_reference":"Brassicales_Brassicaceae_Brassica_oleracea"}]},
+        {"gene":"5318","trees":1,"query_exons":2,"matches":[{"taxon":"Rosales","query_votes":2,"median_distance":0.016,"example_reference":"Rosales_Rosaceae_Prunus_avium"}]},
+        {"gene":"6641","trees":1,"query_exons":2,"matches":[{"taxon":"Brassicales","query_votes":2,"median_distance":0.014,"example_reference":"Brassicales_Brassicaceae_Brassica_rapa"}]}
+      ],
+      "counts":{"matrices":4,"query_exons":7,"reference_taxa":4,"requested_genes":3},"evidence_available":true,"note":"Synthetic demonstration only."
+    },
+    {
+      "id":"family","level":"family","default_z":0,
+      "predictions":[
+        {"taxon":"Rosaceae","rank":1,"score":72.1,"z_score":1.4,"pipeline_selected":true,"selected_by":["aggregate_z","locus_votes"],"locus_votes":10,"query_votes":15,"median_winning_distance":0.008},
+        {"taxon":"Brassicaceae","rank":2,"score":39.8,"z_score":0.2,"pipeline_selected":true,"selected_by":["locus_votes"],"locus_votes":5,"query_votes":7,"median_winning_distance":0.013},
+        {"taxon":"Moraceae","rank":3,"score":10.2,"z_score":-0.7,"pipeline_selected":false,"selected_by":[],"locus_votes":1,"query_votes":1,"median_winning_distance":0.11},
+        {"taxon":"Cannabaceae","rank":4,"score":4.1,"z_score":-0.9,"pipeline_selected":false,"selected_by":[],"locus_votes":0,"query_votes":0,"median_winning_distance":null}
+      ],
+      "genes":[
+        {"gene":"4691","trees":2,"query_exons":3,"matches":[{"taxon":"Rosaceae","query_votes":2,"median_distance":0.009,"example_reference":"Rosales_Rosaceae_Prunus_persica"},{"taxon":"Brassicaceae","query_votes":1,"median_distance":0.016,"example_reference":"Brassicales_Brassicaceae_Brassica_oleracea"}]},
+        {"gene":"6641","trees":1,"query_exons":2,"matches":[{"taxon":"Brassicaceae","query_votes":2,"median_distance":0.011,"example_reference":"Brassicales_Brassicaceae_Brassica_rapa"}]}
+      ],
+      "counts":{"matrices":3,"query_exons":5,"reference_taxa":4,"requested_genes":3},"evidence_available":true,"note":"Synthetic demonstration only."
+    },
+    {
+      "id":"genus","level":"genus","default_z":0,
+      "predictions":[
+        {"taxon":"Prunus","rank":1,"score":62.1,"z_score":1.7,"pipeline_selected":true,"selected_by":["aggregate_z","locus_votes"],"locus_votes":8,"query_votes":12,"median_winning_distance":0.004},
+        {"taxon":"Brassica","rank":2,"score":30.8,"z_score":0.5,"pipeline_selected":true,"selected_by":["locus_votes"],"locus_votes":4,"query_votes":5,"median_winning_distance":0.007},
+        {"taxon":"Rosa","rank":3,"score":11.2,"z_score":-0.6,"pipeline_selected":false,"selected_by":[],"locus_votes":1,"query_votes":1,"median_winning_distance":0.09},
+        {"taxon":"Malus","rank":4,"score":4.1,"z_score":-1.1,"pipeline_selected":false,"selected_by":[],"locus_votes":0,"query_votes":0,"median_winning_distance":null}
+      ],
+      "genes":[
+        {"gene":"4691","trees":2,"query_exons":3,"matches":[{"taxon":"Prunus","query_votes":2,"median_distance":0.005,"example_reference":"Rosales_Rosaceae_Prunus_persica"},{"taxon":"Brassica","query_votes":1,"median_distance":0.007,"example_reference":"Brassicales_Brassicaceae_Brassica_oleracea"}]},
+        {"gene":"6641","trees":1,"query_exons":2,"matches":[{"taxon":"Brassica","query_votes":2,"median_distance":0.006,"example_reference":"Brassicales_Brassicaceae_Brassica_rapa"}]}
+      ],
+      "counts":{"matrices":3,"query_exons":5,"reference_taxa":4,"requested_genes":3},"evidence_available":true,"note":"Synthetic demonstration only."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12382d">
+  <meta name="description" content="Explore SPrOUT plant identification results, taxa and per-gene evidence.">
+  <title>SPrOUT-PEA · Prediction Explorer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2312382d'/%3E%3Cpath d='M15 44c20 0 26-10 34-27 2 24-8 32-24 31M17 42c5-11 15-18 28-22' fill='none' stroke='%23b8e37e' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="SPrOUT-PEA home">
+        <span class="brandmark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 25c11 0 16-6 19-17 1 13-4 19-15 19M8 24c4-6 8-10 16-14"/></svg></span>
+        <span><strong>SPrOUT<span class="brand-dash">—</span>PEA</strong><small>Prediction Exploration App</small></span>
+      </a>
+      <div class="top-actions">
+        <span class="privacy"><span class="privacy-dot"></span> Your data stays in this browser</span>
+        <button id="demoButton" class="button ghost" type="button">View demo</button>
+        <label class="button primary" for="fileInput"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>Open report</label>
+        <input id="fileInput" type="file" accept=".json,.gz,application/json,application/gzip" hidden>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> FROM SEQUENCE TO SIGNAL</div>
+        <h1>See the story<br>inside your <em>sample.</em></h1>
+        <p>Explore plant candidates from order to genus. Follow the evidence gene by gene, adjust Z thresholds, and know when a wider reference panel may help.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="art-center"><svg viewBox="0 0 100 100"><path d="M18 72c39 0 54-16 64-57 3 42-13 63-54 64M19 71C33 46 50 32 80 18"/></svg></div>
+        <div class="art-dot dot-a"></div><div class="art-dot dot-b"></div><div class="art-dot dot-c"></div>
+        <div class="art-label label-a">ORDER <b>01</b></div><div class="art-label label-b">FAMILY <b>02</b></div><div class="art-label label-c">GENUS <b>03</b></div>
+      </div>
+    </section>
+
+    <main>
+      <div id="status" role="status" aria-live="polite"></div>
+      <section id="emptyState" class="empty-state dropzone">
+        <div class="empty-icon"><svg viewBox="0 0 32 32"><path d="M16 21V5m0 0-6 6m6-6 6 6M5 22v4a2 2 0 002 2h18a2 2 0 002-2v-4"/></svg></div>
+        <h2>Start with a report</h2>
+        <p>Drop a <code>.pea.json</code> or <code>.pea.json.gz</code> file here, or use Open report. Maximum 10 MB. Raw reads and full alignments are not accepted.</p>
+        <button id="emptyDemoButton" class="text-button" type="button">Explore a synthetic demo <span aria-hidden="true">↗</span></button>
+      </section>
+
+      <section id="reportView" class="report-view" hidden>
+        <div class="report-heading">
+          <div><span class="section-label">SAMPLE REPORT</span><h2 id="sampleName"></h2><p id="reportMeta"></p></div>
+          <div class="report-heading-actions"><button id="downloadButton" class="button secondary" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 18v2h16v-2"/></svg>Download candidates</button></div>
+        </div>
+        <nav id="stageTabs" class="stage-tabs" aria-label="Analysis stage"></nav>
+        <div class="report-grid">
+          <div class="main-column">
+            <div id="metricCards" class="metric-grid"></div>
+            <section class="panel ranking-panel"><div class="panel-title"><div><span class="section-label">TAXONOMY</span><h3>Candidate ranking</h3></div><span class="panel-icon" aria-hidden="true">▥</span></div><p class="panel-description">Scores are comparative within this reference panel—not mixture proportions. Z changes below are exploratory only.</p><div id="rankingChart" class="ranking-chart"></div></section>
+            <section class="panel table-panel"><div class="panel-title"><div><span class="section-label">FULL RANKING</span><h3>All candidates</h3></div><label class="search"><span aria-hidden="true">⌕</span><input id="taxonSearch" type="search" placeholder="Search taxon" aria-label="Search taxon"></label></div><div class="table-scroll"><table><thead><tr><th>Rank</th><th>Taxon</th><th>Score</th><th>Z</th><th>Locus votes</th><th>Status</th></tr></thead><tbody id="rankingRows"></tbody></table></div></section>
+            <section class="panel gene-panel"><div class="panel-title"><div><span class="section-label">GENE-BY-GENE</span><h3>Evidence explorer</h3></div><span class="panel-icon" aria-hidden="true">⌁</span></div><p class="panel-description">Nearest reference for each query exon; ties may support more than one taxon. Tree distances are not abundance estimates.</p><div id="geneContent"></div></section>
+          </div>
+          <aside class="side-column">
+            <section class="panel controls-panel"><span class="section-label">EXPLORE</span><h3>Z threshold</h3><p>See how the shortlist changes without rerunning the analysis.</p><div class="z-readout"><label for="zInput">Show taxa with Z &gt;</label><output id="zValue"></output></div><input id="zInput" type="range" min="-2" max="5" step="0.1"><div class="range-labels"><span>-2</span><span>5</span></div><div class="threshold-note" id="thresholdNote"></div><div id="selectedList" class="selected-list"></div></section>
+            <section class="panel advice-panel"><span class="section-label">NEXT STEPS</span><h3>Reference check</h3><div id="adviceContent"></div><p class="advice-disclaimer">Automated prompts, not taxonomic conclusions. Adding references requires a new SPrOUT / MrKnowItAll run.</p></section>
+            <section class="panel provenance-panel"><span class="section-label">ABOUT THIS REPORT</span><h3>Run details</h3><dl id="provenance"></dl></section>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <footer><span>SPrOUT-PEA · Explore, verify, refine.</span><span><a href="https://github.com/nhu92/SPrOUT">SPrOUT</a> · <a href="https://github.com/nhu92/MrKnowItAll">MrKnowItAll</a> · <a href="https://github.com/nhu92/SPrOUT-PEA">Source</a></span></footer>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
