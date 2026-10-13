@@ -15,7 +15,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/checkout@v4
+        with:
+          repository: nhu92/SPrOUT
+          path: _sprout
+      - run: python _sprout/export_pea.py stage --project query --level family --predictions tests/fixtures/predictions.csv --candidates tests/fixtures/candidates.txt --matrix-dir tests/fixtures --z-threshold 0 --output generated.pea.json --markdown generated.report.md
+      - run: python -m unittest discover -s _sprout/tests -p test_export_pea.py
+        env:
+          PYTHONPATH: _sprout
       - run: npm test
+        env:
+          PEA_GENERATED_REPORT: generated.pea.json
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: test
