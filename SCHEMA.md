@@ -59,6 +59,8 @@ without modifying these values. `pipeline_selected` is the actual historical wor
 `genes[].matches` records nearest-reference votes only. A tie may vote for more than one taxon.
 `score` and `z_score` may be `null` when undefined. `genes` is empty and
 `evidence_available` is false if the matrices were not supplied.
+For plain SPrOUT runs, `locus_votes` and `query_votes` are summarized from the per-gene
+nearest-reference matches. MrKnowItAll supplies its own candidate evidence when available.
 
 The `.gz` form is simply UTF-8 JSON compressed with gzip. No raw reads, sequences, alignments,
 trees, or complete distance matrices belong in this schema. The exporter limits uncompressed
