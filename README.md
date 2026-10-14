@@ -34,7 +34,10 @@ are evidence for taxon placement, not estimates of mixture weight or proof of a 
 The green tree branches update with the current Z cutoff. The overall tree is a **reference
 topology with one representative specimen per taxon**, not a consensus inferred from the mix.
 Exon trees are pruned to keep the portable report small; each view states how many original tips
-were retained. Older reports without tree data still open, but cannot display these new views.
+were retained. By default, the exporter keeps the workflow-selected taxa, up to 40 top-ranked
+taxa, and nearby branches, capped at 80 displayed tips per tree. A very low Z threshold can
+select taxa outside this portable view; the app warns about that. Older reports without tree
+data still open, but cannot display these new views.
 
 ## Create a report
 

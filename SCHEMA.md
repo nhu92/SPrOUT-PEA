@@ -67,6 +67,8 @@ New reports may also include `genes[].exons[]`, `weighted_support`, `tree_note`,
 bp, a list of `{taxon, score}` contributions, original/displayed tip counts, and a **pruned** tree.
 `summary_tree` is a pruned Kew species-tree context using one representative specimen per ranked
 taxon. It is not a mix-derived consensus or a claim that every family/genus is monophyletic.
+The default export includes workflow-selected taxa plus the top 40 ranked taxa and nearby
+branches, with at most 80 displayed tips per tree (`--max-tree-tips` can set 2–200).
 Both trees use nested nodes: `l` is branch length, `c` children, and terminal nodes have `n`
 (original reference label), `t` (taxon at this stage), and `q` (query-tip flag).
 
