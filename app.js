@@ -79,10 +79,10 @@ function renderTable(item) {
   if (matching.length > 500) $('#rankingRows').insertAdjacentHTML('beforeend', `<tr><td colspan="6" class="no-data">Showing the first 500 of ${matching.length} matches. Refine your search to see more.</td></tr>`);
 }
 
-function treeGraphic(root, item, kind) {
+function treeGraphic(root, item, kind, supportRows = item.weighted_support || []) {
   if (!root) return '<div class="gene-empty"><strong>No topology was exported for this stage.</strong></div>';
   const selected = new Map(selectedTaxa(item, threshold()).map(row => [row.taxon, row]));
-  const weighted = new Map((item.weighted_support || []).map(row => [row.taxon, row.score]));
+  const weighted = new Map(supportRows.map(row => [row.taxon, row.score]));
   const positions = new Map();
   let tips = 0;
   let maxDistance = 0;
@@ -122,7 +122,7 @@ function treeGraphic(root, item, kind) {
     const taxon = node.t || 'Unclassified reference';
     const source = node.n || taxon;
     const name = point.query ? `Query · ${source}` : kind === 'summary' ? taxon : source;
-    const annotation = row ? ` · Z ${formatNumber(row.z_score, 2)} · score ${formatNumber(row.score, 2)}${weighted.has(taxon) ? ` · length support ${formatNumber(weighted.get(taxon), 2)}` : ''}` : '';
+    const annotation = row ? ` · Z ${formatNumber(row.z_score, 2)} · score ${formatNumber(row.score, 2)}${weighted.has(taxon) ? ` · ${kind === 'exon' ? 'exon' : 'combined'} support ${formatNumber(weighted.get(taxon), 2)}` : ''}` : '';
     const text = `${name}${annotation}`;
     labels.push(`<circle class="tree-tip ${cls}" cx="${x(node).toFixed(1)}" cy="${point.y.toFixed(1)}" r="4"/><text class="tree-label ${cls}" x="${(x(node) + 10).toFixed(1)}" y="${(point.y + 4).toFixed(1)}"><title>${esc(source)}${row ? ` | Z ${formatNumber(row.z_score, 2)}` : ''}</title>${esc(text.length > 105 ? text.slice(0, 102) + '…' : text)}</text>`);
   }
@@ -178,7 +178,7 @@ function renderGenes(item) {
   const topSupport = exon?.support || [];
   const supportBars = topSupport.length ? topSupport.slice(0, 12).map(entry => `<div class="support-row"><strong>${esc(entry.taxon)}</strong><span>${formatNumber(entry.score, 3)}</span></div>`).join('') : '<p class="no-data">Length-aware support was unavailable for this exon.</p>';
   const absentExonSelection = exon?.tree ? selectedTaxa(item, threshold()).filter(row => !representedTreeTaxa(exon.tree).has(row.taxon)).length : 0;
-  const treeSection = exon ? `<div class="exon-detail"><h4>Exon tree and length-aware contribution · ${formatNumber(exonTotal(exon), 3)}</h4><p class="tree-caption">${esc(exon.displayed_tips)}/${esc(exon.source_tips)} tips shown · query ${esc(exon.query_usable_bp)} usable bp · median reference ${formatNumber(exon.reference_median_bp, 0)} bp · alignment ${esc(exon.alignment_bp ?? '—')} columns.${absentExonSelection ? ` ${absentExonSelection} current Z-selected taxa are absent from this exon view.` : ''} ${esc(item.tree_note || '')}</p><div class="support-list">${supportBars}</div>${treeGraphic(exon.tree, item, 'exon')}</div>` : '<div class="gene-empty"><strong>Exon trees not in this report</strong><p>This older export kept nearest-reference votes but not the tree topology or trimmed-alignment lengths.</p></div>';
+  const treeSection = exon ? `<div class="exon-detail"><h4>Exon tree and length-aware contribution · ${formatNumber(exonTotal(exon), 3)}</h4><p class="tree-caption">${esc(exon.displayed_tips)}/${esc(exon.source_tips)} tips shown · query ${esc(exon.query_usable_bp)} usable bp · median reference ${formatNumber(exon.reference_median_bp, 0)} bp · alignment ${esc(exon.alignment_bp ?? '—')} columns.${absentExonSelection ? ` ${absentExonSelection} current Z-selected taxa are absent from this exon view.` : ''} ${esc(item.tree_note || '')}</p><div class="support-list">${supportBars}</div>${treeGraphic(exon.tree, item, 'exon', exon.support || [])}</div>` : '<div class="gene-empty"><strong>Exon trees not in this report</strong><p>This older export kept nearest-reference votes but not the tree topology or trimmed-alignment lengths.</p></div>';
   container.innerHTML = `${leaderboard}<div class="gene-toolbar"><label for="geneSelect">Choose a gene</label><select id="geneSelect">${options}</select><span>${esc(gene.trees)} tree${gene.trees === 1 ? '' : 's'} · ${esc(gene.query_exons)} query exons</span></div><div class="gene-matches">${evidence}</div>${exons.length ? `<div class="gene-toolbar"><label for="exonSelect">Choose an exon</label><select id="exonSelect">${exonOptions}</select><span>${esc(exons.length)} available trees</span></div>` : ''}${treeSection}`;
   $('#geneSelect').addEventListener('change', event => { state.gene = event.target.value; state.exon = null; renderGenes(item); });
   $('#exonSelect')?.addEventListener('change', event => { state.exon = event.target.value; renderGenes(item); });
