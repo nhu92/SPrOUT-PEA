@@ -2,6 +2,22 @@ export const SCHEMA = 'sprout-pea/v1';
 export const MAX_FILE_BYTES = 10 * 1024 * 1024;
 export const MAX_JSON_BYTES = 20 * 1024 * 1024;
 
+function validateTree(root) {
+  if (!root || typeof root !== 'object') throw new Error('Invalid tree topology.');
+  const stack = [[root, 0]];
+  let nodes = 0;
+  while (stack.length) {
+    const [node, depth] = stack.pop();
+    if (++nodes > 500 || depth > 150 || !Number.isFinite(node.l) || node.l < 0 ||
+        (node.n !== undefined && (typeof node.n !== 'string' || node.n.length > 300)) ||
+        (node.t !== undefined && node.t !== null && (typeof node.t !== 'string' || node.t.length > 200)) ||
+        (node.c !== undefined && (!Array.isArray(node.c) || node.c.length > 100))) {
+      throw new Error('The report has an invalid or oversized tree.');
+    }
+    for (const child of node.c || []) stack.push([child, depth + 1]);
+  }
+}
+
 export function validateReport(value) {
   if (!value || value.schema_version !== SCHEMA || typeof value.sample_id !== 'string' ||
       !value.sample_id || !Array.isArray(value.stages) || !value.stages.length || value.stages.length > 20) {
@@ -27,7 +43,18 @@ export function validateReport(value) {
       if (typeof gene?.gene !== 'string' || !Array.isArray(gene.matches) || gene.matches.length > 1000) {
         throw new Error(`Invalid gene evidence in ${stage.id}.`);
       }
+      if (gene.exons !== undefined) {
+        if (!Array.isArray(gene.exons) || gene.exons.length > 100) throw new Error(`Invalid exons in ${stage.id}.`);
+        for (const exon of gene.exons) {
+          if (typeof exon?.id !== 'string' || !Array.isArray(exon.support) || exon.support.length > 100 ||
+              exon.support.some(row => typeof row.taxon !== 'string' || !Number.isFinite(row.score) || row.score < 0)) {
+            throw new Error(`Invalid exon support in ${stage.id}.`);
+          }
+          if (exon.tree) validateTree(exon.tree);
+        }
+      }
     }
+    if (stage.summary_tree?.tree) validateTree(stage.summary_tree.tree);
   }
   return value;
 }

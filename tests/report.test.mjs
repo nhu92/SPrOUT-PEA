@@ -7,6 +7,8 @@ const demo = validateReport(JSON.parse(await readFile(new URL('../examples/demo.
 
 test('valid portable report has order, family and genus', () => {
   assert.deepEqual(demo.stages.map(stage => stage.id), ['order', 'family', 'genus']);
+  assert.ok(demo.stages.every(stage => stage.summary_tree?.tree));
+  assert.ok(demo.stages.every(stage => stage.genes.some(gene => gene.exons?.length)));
 });
 
 test('Z exploration differs from the original pipeline selection', () => {
@@ -22,6 +24,7 @@ test('candidate advice notes lower-Z gene votes', () => {
 
 test('rejects invalid schema and oversized input', async () => {
   assert.throws(() => validateReport({ ...demo, schema_version: 'other' }), /supported/);
+  assert.throws(() => validateReport({ ...demo, stages: [{ ...demo.stages[0], summary_tree: { tree: { l: -1 } } }] }), /invalid or oversized tree/);
   await assert.rejects(readReportFile({ size: 11 * 1024 * 1024 }), /smaller than 10 MB/);
 });
 

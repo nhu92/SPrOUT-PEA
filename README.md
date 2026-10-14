@@ -24,10 +24,17 @@ the report small and leaves those files on the analysis computer.
 - A Z threshold you can change for each stage and a downloadable candidate list.
 - The original pipeline-selected taxa, including MrKnowItAll taxa rescued by gene votes.
 - Per-gene nearest-reference evidence, query-exon votes, and reference names.
+- A navigable tree for each exported exon, with branches leading to the current Z-selected taxa highlighted.
+- An overall pruned Kew reference tree with candidate scores and nearby context branches.
+- Exploratory exon contribution scores adjusted for usable A/C/G/T length and tree distance.
 - Cautious suggestions about when broader references or a rerun may help.
 
 Changing Z in the app **does not rerun SPrOUT or add new references**. Tree distances and scores
 are evidence for taxon placement, not estimates of mixture weight or proof of a species.
+The green tree branches update with the current Z cutoff. The overall tree is a **reference
+topology with one representative specimen per taxon**, not a consensus inferred from the mix.
+Exon trees are pruned to keep the portable report small; each view states how many original tips
+were retained. Older reports without tree data still open, but cannot display these new views.
 
 ## Create a report
 
@@ -40,7 +47,8 @@ python /path/to/SPrOUT/export_pea.py stage \
   --project my_sample --level order \
   --predictions my_sample.predictions.csv \
   --candidates my_sample.order_candidates.txt \
-  --matrix-dir my_sample_matrix \
+  --matrix-dir my_sample_matrix --phylo-dir my_sample_phylo \
+  --context-tree /path/to/kew/treeoflife.current.tree \
   --gene-list gene.list.txt --z-threshold 0.9 \
   --output my_sample.order.pea.json --markdown my_sample.order.report.md
 ```
@@ -50,6 +58,8 @@ Run `export_pea.py merge --project my_sample --input order.pea.json family.pea.j
 are gone, omit `--matrix-dir`; the viewer will show the ranking but clearly mark per-gene
 evidence as unavailable. New MrKnowItAll HPC stages write compact reports before deleting their
 temporary matrices and combine them at the end of a sample run.
+The phylogeny directory must still contain `*.tre` and `*_trimmed.fasta` when `stage` runs.
+`--context-tree` is optional for plain SPrOUT; MrKnowItAll supplies its cached Kew tree.
 
 ## Development and tests
 
