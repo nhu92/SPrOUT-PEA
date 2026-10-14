@@ -12,6 +12,9 @@ python -m http.server 8000
 
 Then open <http://localhost:8000>. No account or server upload is needed: the report stays in
 your browser. Use **Open report** to select a `.pea.json` or `.pea.json.gz` file (10 MB maximum).
+For a folder you can open directly from OneDrive without a local server, run
+`npm run build:offline` and copy `dist/index.html`. That standalone file includes the synthetic
+demo and works when double-clicked; real reports are still selected with **Open report**.
 Do **not** upload FASTQ files, full alignments, or SPrOUT's matrix directory. The exporter keeps
 the report small and leaves those files on the analysis computer.
 

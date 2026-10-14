@@ -145,6 +145,10 @@ async function handleFile(file) {
 
 async function loadDemo() {
   try {
+    if (globalThis.SPROUT_PEA_EMBEDDED_DEMO) {
+      loadReport(globalThis.SPROUT_PEA_EMBEDDED_DEMO, true);
+      return;
+    }
     const response = await fetch('./examples/demo.pea.json');
     if (!response.ok) throw new Error('Could not load the demonstration.');
     loadReport(await response.json(), true);
